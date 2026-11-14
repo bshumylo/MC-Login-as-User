@@ -11,3 +11,6 @@
 /composer.phar
 /.idea/
 /.vscode/
+
+# Release packages kept locally
+/login-as-user-*.zip
