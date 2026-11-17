@@ -45,8 +45,9 @@ npm ci
 node build --extension   # -> build/login-as-user-<version>.zip
 ```
 
-Pushing a new version in `extension.json` (and `package.json`) to `main` creates a tag and a GitHub release with the
-zip automatically (see `.github/workflows/release.yml`).
+Pushing a new version in `extension.json` (and `package.json`) to `main` creates the tag `vX.Y.Z` and a GitHub release
+with `login-as-user-X.Y.Z.zip` automatically (see `.github/workflows/release.yml`; the same workflow is used in all MC
+extension repositories). Releases 1.0.1 and older use tags without the `v` prefix.
 
 ## License
 
