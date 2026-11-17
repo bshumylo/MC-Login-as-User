@@ -15,7 +15,14 @@ class TargetPolicyTest extends TestCase
      */
     private function user(string $id, array $flags = []): User
     {
-        $flags += ['admin' => false, 'active' => true, 'system' => false, 'api' => false, 'super' => false];
+        $flags += [
+            'admin' => false,
+            'active' => true,
+            'system' => false,
+            'api' => false,
+            'super' => false,
+            'portal' => false,
+        ];
 
         return new class ($id, $flags) extends User {
             /**
@@ -53,6 +60,20 @@ class TargetPolicyTest extends TestCase
             {
                 return $this->flags['super'];
             }
+
+            public function isPortal(): bool
+            {
+                return $this->flags['portal'];
+            }
+
+            public function isRegular(): bool
+            {
+                return !$this->flags['admin'] &&
+                    !$this->flags['super'] &&
+                    !$this->flags['system'] &&
+                    !$this->flags['api'] &&
+                    !$this->flags['portal'];
+            }
         };
     }
 
@@ -88,12 +109,31 @@ class TargetPolicyTest extends TestCase
         $this->assertFalse($policy->isAllowed($actor, $this->user('k', ['api' => true])));
     }
 
-    public function testSuperAdminOnlyForSuperAdmin(): void
+    public function testNotAsPortalUser(): void
+    {
+        $actor = $this->user('a', ['admin' => true]);
+
+        $this->assertFalse((new TargetPolicy())->isAllowed($actor, $this->user('p', ['portal' => true])));
+    }
+
+    public function testNotAsAdministrator(): void
+    {
+        $actor = $this->user('a', ['admin' => true]);
+
+        $this->assertFalse((new TargetPolicy())->isAllowed($actor, $this->user('b', ['admin' => true])));
+    }
+
+    public function testNotAsSuperAdminEvenForSuperAdmin(): void
     {
         $policy = new TargetPolicy();
         $super = $this->user('s', ['super' => true]);
 
         $this->assertFalse($policy->isAllowed($this->user('a', ['admin' => true]), $super));
-        $this->assertTrue($policy->isAllowed($this->user('b', ['super' => true]), $this->user('c', ['super' => true])));
+        $this->assertFalse($policy->isAllowed($this->user('b', ['super' => true]), $super));
+    }
+
+    public function testSuperAdminMayActAsRegularUser(): void
+    {
+        $this->assertTrue((new TargetPolicy())->isAllowed($this->user('s', ['super' => true]), $this->user('u')));
     }
 }

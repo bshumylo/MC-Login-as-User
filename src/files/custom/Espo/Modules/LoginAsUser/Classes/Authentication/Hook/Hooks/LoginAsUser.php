@@ -79,11 +79,20 @@ class LoginAsUser implements OnResult
             $target->loadLinkMultipleField('teams');
         }
 
+        // Read everything from the administrator before the swap: in the core the user of the result
+        // and the logged user are the same object, so after the swap it already describes the target.
+        $adminId = $admin->getId();
         $ipAddress = $admin->get('ipAddress');
+        // Keep the ids of the administrator's session (the core sets them on the logged user):
+        // Action History records then point to the real login. The token itself is not kept.
+        $authTokenId = $this->user->get('authTokenId');
+        $authLogRecordId = $this->user->get('authLogRecordId');
 
         $this->user->reset();
         $this->user->set($target->getValueMap());
         $this->user->set('ipAddress', $ipAddress);
-        $this->user->set(self::ACTOR_ATTRIBUTE, $admin->getId());
+        $this->user->set('authTokenId', $authTokenId);
+        $this->user->set('authLogRecordId', $authLogRecordId);
+        $this->user->set(self::ACTOR_ATTRIBUTE, $adminId);
     }
 }

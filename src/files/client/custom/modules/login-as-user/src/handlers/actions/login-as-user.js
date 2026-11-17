@@ -9,7 +9,7 @@ define(['action-handler', 'login-as-user:helpers/impersonation'], (Dep, imperson
             return user.isAdmin() &&
                 !impersonation.getState(this.view.getHelper()) &&
                 model.id !== user.id &&
-                (model.isRegular() || model.isAdmin() || model.isPortal());
+                model.isRegular();
         }
 
         loginAsUser() {

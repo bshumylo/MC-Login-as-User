@@ -35,7 +35,8 @@ class PostStop implements Action
         $actorId = $this->user->get(LoginAsUser::ACTOR_ATTRIBUTE);
 
         if ($actorId) {
-            $this->log->notice('Login as User: stopped.', [
+            // Warning level: written with the default EspoCRM log level.
+            $this->log->warning('Login as User: stopped.', [
                 'userId' => $actorId,
                 'loginAsUserId' => $this->user->getId(),
                 'ipAddress' => $this->user->get('ipAddress'),
