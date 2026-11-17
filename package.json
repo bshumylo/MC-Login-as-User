@@ -1,6 +1,6 @@
 {
   "name": "espocrm-ext-login-as-user",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Extension: Login as User for EspoCRM administrators.",
   "scripts": {
     "sa": "vendor/bin/phpstan",
@@ -17,7 +17,7 @@
   },
   "type": "module",
   "author": "Bogdan Shumylo",
-  "license": "GPL-3.0-or-later",
+  "license": "AGPL-3.0-or-later",
   "dependencies": {
     "espo-extension-tools": "github:espocrm/extension-tools#0.4.5",
     "fs-extra": "^9.0.0"

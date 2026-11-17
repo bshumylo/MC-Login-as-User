@@ -22,11 +22,12 @@ class TargetPolicy
             return false;
         }
 
-        if (!$target->isActive() || $target->isSystem() || $target->isApi()) {
+        if (!$target->isActive()) {
             return false;
         }
 
-        // Only a super-admin may act as a super-admin.
-        return !$target->isSuperAdmin() || $actor->isSuperAdmin();
+        // The same rule as the EspoCRM core "log in as another user" feature: regular users only.
+        // No administrators, super-admins, portal, API or system users.
+        return $target->isRegular();
     }
 }

@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.0.2
+
+### Security
+- Only active **regular** users can be chosen as a target now — the same rule as the built-in EspoCRM feature. Administrators, super-admins and portal users are no longer available; the *Login as User* button is hidden for them.
+- Starting and stopping are written to the EspoCRM log at the `warning` level, so the lines are kept with the default log settings.
+- Action History records made while acting as another user keep the link to the administrator's login (auth token and auth log record), and the administrator is named correctly in the "stopped" log line.
+- The start request is accepted only with the auth token of the current session, and API users are refused explicitly.
+
+### Tests
+- Unit tests for the start and stop endpoints and for the authentication hook.
+
 ## 1.0.1
 
 ### Fixes

@@ -47,7 +47,8 @@ class PostStart implements Action
             throw new Forbidden('Missing required header.');
         }
 
-        if (!$this->user->isAdmin() || $this->user->get(LoginAsUser::ACTOR_ATTRIBUTE)) {
+        // The API-user check is explicit: the `apiAuthForbidden` route flag is not known to every supported core.
+        if (!$this->user->isAdmin() || $this->user->isApi() || $this->user->get(LoginAsUser::ACTOR_ATTRIBUTE)) {
             throw new Forbidden('Only administrators can log in as other users.');
         }
 
@@ -69,7 +70,16 @@ class PostStart implements Action
 
         $token = RequestToken::get($request);
 
-        if ($token === null) {
+        // The core stores the auth token of the session on the logged user. The header value is accepted only
+        // if it is that token, so nothing else (for example a password) can end up in the ticket.
+        $sessionToken = $this->user->get('token');
+
+        if (
+            $token === null ||
+            !is_string($sessionToken) ||
+            $sessionToken === '' ||
+            !hash_equals($sessionToken, $token)
+        ) {
             throw new Forbidden('Only a session authenticated by an auth token can log in as another user.');
         }
 
@@ -82,7 +92,8 @@ class PostStart implements Action
             time() + $ttl
         );
 
-        $this->log->notice('Login as User: started.', [
+        // Warning level: written with the default EspoCRM log level.
+        $this->log->warning('Login as User: started.', [
             'userId' => $this->user->getId(),
             'userName' => $this->user->getUserName(),
             'loginAsUserId' => $target->getId(),
