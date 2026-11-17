@@ -1,54 +1,82 @@
 # Login as User
 
-EspoCRM extension that lets administrators log in as another user — for example, to debug ACL.
+**Lets an EspoCRM administrator log in as another user, for example to check what that user sees and to debug access rights.**
+
+English · [Українська](README.uk.md)
+
+Version **1.0.2** · EspoCRM **≥ 10.0.0** · PHP **≥ 8.3** · AGPL-3.0
+
+## What it does
+
+- **One click.** Open the record of a user and choose **Login as User** in the actions menu. You see EspoCRM exactly as that user sees it.
+- **Easy to return.** While you act as another user, an *Acting as …* banner with a **Return to My Account** button stays on screen. The **Log Out** item in the user menu also becomes **Return to My Account**.
+- **Good for ACL checks.** Test roles, teams and field access without asking for a password.
+- **Clear records.** What you do is saved as that user (created by, modified by, stream). Action History records keep the link to your own login.
+- **A trace in the log.** The start and the manual end of every session (who, as whom, IP address) are written to the EspoCRM log.
+- **Time limit.** A session ends by itself after one hour (you can change this).
+- **Three languages.** English, Ukrainian and Czech.
 
 ## Requirements
 
-- EspoCRM ≥ 10.0
-- PHP 8.3 – 8.5
+- EspoCRM 10.0.0 or newer.
+- PHP 8.3 – 8.5.
 
 ## Installation
 
-1. Download the latest zip from the [Releases page](https://github.com/bshumylo/MC-Login-as-User/releases/latest).
-2. Go to **Administration → Extensions**, upload the zip and install it.
+1. Download `login-as-user-1.0.2.zip` from [Releases](../../releases/latest). Do not use the automatic "Source code (zip)" file: it cannot be installed.
+2. In EspoCRM open **Administration → Extensions → Upload**, choose the ZIP, then click **Install**. The installer rebuilds the system itself. Run **Administration → Rebuild** only if something looks wrong.
+3. No setup is needed. Open **Administration → Users**, choose an active regular user and use **Login as User** in the actions menu (top right of the record). Only administrators see this item.
 
-## Usage
+## Upgrading
 
-Open the record of an active regular user and choose **Login as User** in the dropdown of the top-right
-actions. While you act as that user, the **Log Out** item of the user menu turns into **Return to My Account**.
+1. Make a backup of the database and files.
+2. Install the new ZIP over the old one (**Administration → Extensions → Upload → Install**).
+3. Version notes:
+   - From versions before 1.0: the old `login-as-user-id` cookie is removed automatically and is no longer used.
+   - **1.0.2**: only active regular users can be chosen now. See Security.
+   - Releases 1.0.1 and older use tags without the `v` prefix.
 
-While you act as another user, an *Acting as …* banner with a **Return to My Account** button stays on screen.
-Everything you do is recorded as that user (created by, modified by, stream). The extension writes the start and the
-manual end of every session (who, as whom, IP address) to the EspoCRM log at the `warning` level, so the lines are
-kept with the default log settings. Action History records made in such a session keep the link to the
-administrator's own login (auth token and auth log record).
+## Settings
 
-### How it is secured
+There is no admin page. One optional parameter goes into `data/config.php`:
 
-- **Administrators only, regular users only.** The target must be an active regular user — the same rule as the
-  built-in EspoCRM "log in as another user" feature. You cannot act as yourself, as an administrator or super-admin,
-  or as a portal, API, system or inactive user. API users cannot start a session. The rules are checked when the
-  session starts and on every request.
-- **A signed ticket, not a plain cookie.** *Login as User* asks the server (`POST /api/v1/LoginAsUser/start`), which
-  sets an **HttpOnly** cookie signed with the instance `cryptKey`. The ticket names the administrator, the target
-  user, the auth token of the current session and an expiry, so it cannot be forged, reused after logout or in another
-  session, or read by scripts. Invalid tickets are ignored.
-- **Time-limited.** One hour by default; set `'loginAsUserTtl' => 1800` (seconds, 60–28800) in
-  `data/config.php` to change it. Click *Return to My Account* or log out to end it earlier.
+| Parameter | Default | What it does |
+|---|---|---|
+| `loginAsUserTtl` | `3600` (one hour) | How long a session lasts, in seconds. Allowed range: 60 to 28800; a value outside the range is adjusted to the nearest limit. |
 
-Upgrading from the pre-1.0 versions: the old `login-as-user-id` cookie is removed automatically and is no longer used.
+Example: `'loginAsUserTtl' => 1800,`
 
-## Build from source
+To end a session earlier, click *Return to My Account* or log out.
+
+## Security
+
+- **Administrators only, regular users only.** You can act only as an active regular user, the same rule as the built-in EspoCRM feature. You cannot act as yourself, as an administrator or super-admin, or as a portal, API, system or inactive user. API users cannot start a session. The rules are checked when the session starts and on every request.
+- **A signed ticket, not a plain cookie.** The start request creates an **HttpOnly** cookie signed with the `cryptKey` of your instance. It names the administrator, the target user, the auth token of the current session and an expiry. It cannot be forged, reused after logout or in another session, or read by scripts. Invalid tickets are ignored.
+- **Time-limited.** One hour by default (see Settings).
+- **Logged.** Start and end are written to the log at the `warning` level, so the lines are kept with default log settings.
+- Use it only with the knowledge of your team, and only when you need it. Everything you do is recorded as the other user.
+
+To report a vulnerability, see [SECURITY.md](SECURITY.md).
+
+## For developers
+
+**Build the ZIP locally.** The extension uses the official template.
 
 ```bash
 npm ci
-node build --extension   # -> build/login-as-user-<version>.zip
+node build --extension   # creates build/login-as-user-<version>.zip
 ```
 
-Pushing a new version in `extension.json` (and `package.json`) to `main` creates the tag `vX.Y.Z` and a GitHub release
-with `login-as-user-X.Y.Z.zip` automatically (see `.github/workflows/release.yml`; the same workflow is used in all MC
-extension repositories). Releases 1.0.1 and older use tags without the `v` prefix.
+**Releases.** Raise the version in `extension.json` and `package.json` and merge it into `main`. The workflow [.github/workflows/release.yml](.github/workflows/release.yml) creates the release `vX.Y.Z` with `login-as-user-X.Y.Z.zip` automatically. The same workflow is used in all MC extension repositories. See [CHANGELOG.md](CHANGELOG.md) for the history.
 
-## License
+**Technical notes.** The start and stop endpoints are `POST /api/v1/LoginAsUser/start` and `POST /api/v1/LoginAsUser/stop`. The start request is accepted only with the auth token of the current session. The code is in `src/files/custom/Espo/Modules/LoginAsUser/`; unit tests are in `tests/unit/` (`npm run unit-tests`).
 
-GPL-3.0-or-later. Originally created by Apertia Tech s.r.o.
+Originally created by Apertia Tech s.r.o. This repository continues it on the official template.
+
+## Author and license
+
+Developed by [bshumylo](https://github.com/bshumylo). Built on the official [EspoCRM extension template](https://github.com/espocrm/ext-template).
+
+Licensed under the [GNU AGPL v3](LICENSE). Use it at your own risk and test new versions on a copy of your CRM first.
+
+Found a bug or have an idea? Open an [issue](../../issues).
