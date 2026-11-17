@@ -23,7 +23,7 @@ Version **1.0.2** · EspoCRM **≥ 10.0.0** · PHP **≥ 8.3** · AGPL-3.0
 
 ## Installation
 
-1. Download `login-as-user-1.0.2.zip` from [Releases](../../releases/latest). Do not use the automatic "Source code (zip)" file: it cannot be installed.
+1. Download `mc-login-as-user-1.0.2.zip` from [Releases](../../releases/latest). Do not use the automatic "Source code (zip)" file: it cannot be installed.
 2. In EspoCRM open **Administration → Extensions → Upload**, choose the ZIP, then click **Install**. The installer rebuilds the system itself. Run **Administration → Rebuild** only if something looks wrong.
 3. No setup is needed. Open **Administration → Users**, choose an active regular user and use **Login as User** in the actions menu (top right of the record). Only administrators see this item.
 
@@ -64,10 +64,10 @@ To report a vulnerability, see [SECURITY.md](SECURITY.md).
 
 ```bash
 npm ci
-node build --extension   # creates build/login-as-user-<version>.zip
+node build --extension   # creates build/mc-login-as-user-<version>.zip
 ```
 
-**Releases.** Raise the version in `extension.json` and `package.json` and merge it into `main`. The workflow [.github/workflows/release.yml](.github/workflows/release.yml) creates the release `vX.Y.Z` with `login-as-user-X.Y.Z.zip` automatically. The same workflow is used in all MC extension repositories. See [CHANGELOG.md](CHANGELOG.md) for the history.
+**Releases.** Raise the version in `extension.json` and `package.json` and merge it into `main`. The workflow [.github/workflows/release.yml](.github/workflows/release.yml) creates the release `vX.Y.Z` with `mc-login-as-user-X.Y.Z.zip` automatically. The same workflow is used in all MC extension repositories. See [CHANGELOG.md](CHANGELOG.md) for the history.
 
 **Technical notes.** The start and stop endpoints are `POST /api/v1/LoginAsUser/start` and `POST /api/v1/LoginAsUser/stop`. The start request is accepted only with the auth token of the current session. The code is in `src/files/custom/Espo/Modules/LoginAsUser/`; unit tests are in `tests/unit/` (`npm run unit-tests`).
 

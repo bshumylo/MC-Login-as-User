@@ -1,5 +1,6 @@
 {
     "module": "LoginAsUser",
+    "packageName": "McLoginAsUser",
     "name": "Login as User",
     "description": "Adds the \"Login as User\" feature for administrators, making it, for example, easier to debug ACL.",
     "author": "bshumylo",

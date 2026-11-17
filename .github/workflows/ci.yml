@@ -94,5 +94,5 @@ jobs:
           npm ci --ignore-scripts
           node build --extension
           version=$(node -p "require('./extension.json').version")
-          test -f "build/login-as-user-$version.zip"
-          unzip -l "build/login-as-user-$version.zip" | tail -n 3
+          test -f "build/mc-login-as-user-$version.zip"
+          unzip -l "build/mc-login-as-user-$version.zip" | tail -n 3
