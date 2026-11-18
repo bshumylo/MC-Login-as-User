@@ -23,7 +23,7 @@
 
 ## Встановлення
 
-1. Завантажте `login-as-user-1.0.2.zip` зі сторінки [Releases](../../releases/latest). Не беріть автоматичний файл «Source code (zip)»: його не можна встановити.
+1. Завантажте `mc-login-as-user-1.0.2.zip` зі сторінки [Releases](../../releases/latest). Не беріть автоматичний файл «Source code (zip)»: його не можна встановити.
 2. В EspoCRM відкрийте **Адміністрування → Розширення → Завантажити**, оберіть ZIP і натисніть **Встановити**. Інсталятор сам перебудовує систему. **Адміністрування → Rebuild** потрібен лише тоді, коли щось працює не так.
 3. Налаштування не потрібні. Відкрийте **Адміністрування → Користувачі**, оберіть активного звичайного користувача й скористайтеся **Login as User** у меню дій (угорі праворуч у записі). Цей пункт бачать лише адміністратори.
 
@@ -64,10 +64,10 @@
 
 ```bash
 npm ci
-node build --extension   # створює build/login-as-user-<version>.zip
+node build --extension   # створює build/mc-login-as-user-<version>.zip
 ```
 
-**Релізи.** Підвищте версію в `extension.json` і `package.json` та злийте зміни в `main`. Workflow [.github/workflows/release.yml](.github/workflows/release.yml) сам створить реліз `vX.Y.Z` з `login-as-user-X.Y.Z.zip`. Той самий workflow використовується в усіх репозиторіях розширень MC. Історію змін див. у [CHANGELOG.md](CHANGELOG.md).
+**Релізи.** Підвищте версію в `extension.json` і `package.json` та злийте зміни в `main`. Workflow [.github/workflows/release.yml](.github/workflows/release.yml) сам створить реліз `vX.Y.Z` з `mc-login-as-user-X.Y.Z.zip`. Той самий workflow використовується в усіх репозиторіях розширень MC. Історію змін див. у [CHANGELOG.md](CHANGELOG.md).
 
 **Технічні нотатки.** Endpoint-и старту й зупинки: `POST /api/v1/LoginAsUser/start` і `POST /api/v1/LoginAsUser/stop`. Запит на старт приймається лише з auth token поточної сесії. Код розміщено в `src/files/custom/Espo/Modules/LoginAsUser/`; unit-тести — у `tests/unit/` (`npm run unit-tests`).
 

@@ -1,7 +1,7 @@
 {
-  "name": "espocrm-ext-login-as-user",
+  "name": "mc-login-as-user",
   "version": "1.0.2",
-  "description": "Extension: Login as User for EspoCRM administrators.",
+  "description": "Adds the \"Login as User\" feature for administrators, making it, for example, easier to debug ACL.",
   "scripts": {
     "sa": "vendor/bin/phpstan",
     "unit-tests": "vendor/bin/phpunit",
@@ -16,7 +16,7 @@
     "prepare-test": "node build --prepare-test"
   },
   "type": "module",
-  "author": "Bogdan Shumylo",
+  "author": "bshumylo",
   "license": "AGPL-3.0-or-later",
   "dependencies": {
     "espo-extension-tools": "github:espocrm/extension-tools#0.4.5",
